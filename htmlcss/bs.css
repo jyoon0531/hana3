@@ -1,0 +1,44 @@
+body::after {
+  content: "BBB";
+}
+
+@media (max-width: 576px) {
+  body::after {
+    content: "XS";
+  }
+}
+
+@media (min-width: 576px) {
+  body::after {
+    content: "SM";
+  }
+}
+
+@media (min-width: 768px) {
+  body::after {
+    content: "MD";
+  }
+}
+@media (min-width: 992px) {
+  body::after {
+    content: "LG";
+  }
+}
+
+@media (min-width: 1200px) {
+  body::after {
+    content: "XL";
+  }
+}
+
+@media (min-width: 1400px) {
+  body::after {
+    content: "XXL";
+  }
+}
+.box {
+  background-color: pink;
+  border: 1px solid red;
+  min-height: 2rem;
+  font-size: 2rem;
+}
