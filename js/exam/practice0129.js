@@ -1,3 +1,4 @@
+// 연습문제 1
 const arr = [100, 200, 300, 400, 500, 600, 700];
 
 for (let k in arr) {
@@ -10,22 +11,43 @@ for (let k in arr) {
 
 const obj = { name: "lim", addr: "Yongsan", level: 1, role: 9, receive: false };
 
+for (let k in obj) {
+  console.log("key: ", k);
+  console.log("value: ", obj[k]);
+}
+
+for (const [key, value] of Object.entries(obj)) {
+  console.log("value: ", value);
+}
+
+// 연습문제 2
 const arr2 = [
   ["A", 10, 20],
   ["B", 30, 40],
   ["C", 50, 60, 70],
 ];
 
-// const obj = Object.fromEntries(arr2);
-
 function makeObjectFromArray(arr) {
   const newObj = {};
+  for (const [key, ...value] of arr) {
+    newObj[key] = value;
+  }
+  return newObj;
 }
 
-makeObjectFromArray(arr2);
+function makeArrayFromObject(obj) {
+  const newArr = Object.entries(obj);
+  for (let k in newArr) {
+    newArr[k] = newArr[k].flat();
+  }
+  return newArr;
+}
 
-// console.log(obj)
+console.log(makeObjectFromArray(arr2));
+const objBefore = makeObjectFromArray(arr2);
+console.log(makeArrayFromObject(objBefore));
 
+// 연습문제 3
 function copyObject(obj) {
   const newObj = {};
   for (const k in obj) {
