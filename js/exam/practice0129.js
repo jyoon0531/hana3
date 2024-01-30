@@ -16,9 +16,20 @@ for (let k in obj) {
   console.log("value: ", obj[k]);
 }
 
-for (const [key, value] of Object.entries(obj)) {
-  console.log("value: ", value);
+// for (const [key, value] of Object.entries(obj)) {
+//   console.log("value: ", value);
+// }
+
+for (let k of Object.keys(obj)) {
+  console.log(k);
 }
+
+Object.defineProperty(obj, "level", { enumerable: false });
+console.log(Object.entries(obj));
+
+Object.defineProperty(obj, "role", { writable: false });
+obj.role = "xxxxx";
+console.log("role>>", obj.role);
 
 // 연습문제 2
 const arr2 = [
@@ -36,10 +47,15 @@ function makeObjectFromArray(arr) {
 }
 
 function makeArrayFromObject(obj) {
-  const newArr = Object.entries(obj);
-  for (let k in newArr) {
-    newArr[k] = newArr[k].flat();
+  // const newArr = Object.entries(obj);
+  // for (let k in newArr) {
+  //   newArr[k] = newArr[k].flat();
+  // }
+  const newArr = [];
+  for (const k in obj) {
+    newArr.push([k, ...obj[k]]); // 대괄호 없애기 위해 spread
   }
+
   return newArr;
 }
 
