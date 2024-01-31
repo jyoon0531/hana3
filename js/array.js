@@ -1,3 +1,5 @@
+const assert = require("assert");
+
 const arr = [1, 2, 3];
 console.log("🚀 ~ arr:", { ...arr });
 console.log("🚀 ~ arr:", arr.entries());
@@ -189,3 +191,4 @@ console.log("🚀 ~ namestr:", namestr);
 const objs = [{ id: 1 }, { name: "Hong" }, { addr: "Seoul", id: 5 }];
 const result = objs.reduce((acc, item) => ({ ...acc, ...item }), {});
 console.log("🚀 ~ result:", result);
+assert.deepStrictEqual(result, { id: 5, name: "Hong", addr: "Seoul" });
