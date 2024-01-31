@@ -165,3 +165,27 @@ console.log("🚀 ~ ex7:", ex7);
 // ex8) 위 7번 문제를 splice를 사용하지 말고 작성하시오.
 const ex8 = [...arr2.slice(0, 2), "X", "Y", "Z", ...arr2.slice(3)];
 console.log("🚀 ~ ex8:", ex8);
+
+console.log("🚀 ~ arr2:", arr2);
+console.log("🚀 ~ arr2:", arr2.toSpliced(2, 2));
+console.log("🚀 ~ arr2:", arr2);
+
+console.log("--------------------------");
+let sum1 = 0;
+for (let item of arr) sum1 += item;
+console.log("🚀 ~ sum1:", sum1);
+const sum2 = arr.reduce((sum, item) => sum + item, 0);
+// sum = 0
+// item = 1 ==> 0 + 1 ==> sum(1)
+// item = 22 ==> 1 + 22 ==> sum(23)
+// item = 3 ==> 23 + 3 ==> sum(26)
+// sum2 = 26
+console.log("🚀 ~ sum2:", sum2);
+
+console.log("--------------------------");
+const namestr = users.reduce((acc, item) => `${acc} ${item.name}`, "");
+console.log("🚀 ~ namestr:", namestr);
+
+const objs = [{ id: 1 }, { name: "Hong" }, { addr: "Seoul", id: 5 }];
+const result = objs.reduce((acc, item) => ({ ...acc, ...item }), {});
+console.log("🚀 ~ result:", result);
