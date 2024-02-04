@@ -41,8 +41,13 @@ const ret3 = arr
 console.log("🚀 ~ ret3:", ret3);
 
 const ret3_2 = [square, sqrt, cube].reduce((acc, f) => f(acc), 2);
-const bp1 = (n) => [square, sqrt, cube].reduce((acc, f) => f(acc), n);
+const bp1 = (n) => [square, sqrt, cube].reduce((acc, f) => f(acc), n); // 배열 안 함수의 순서를 변경할 수 있음!
 
 console.log("🚀 ~ ret3_2:", ret3_2, bp1(2));
-const ret_3 = arr.map((item) => bp1(item));
-console.log("🚀 ~ ret_3:", ret_3);
+// const ret_3 = arr.map((item) => bp1(item));
+const ret3_3 = arr.map(bp1);
+console.log("🚀 ~ ret_3:", ret3_3);
+
+const bpm = (fns, n) => fns.reduce((acc, f) => f(acc), n);
+const ret3_4 = bpm([square, sqrt, cube], 2);
+console.log("🚀 ~ ret3_4:", ret3_4);
