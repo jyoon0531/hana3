@@ -1,5 +1,6 @@
 {
   "dependencies": {
     "yarn": "^1.22.21"
-  }
+  },
+  "type": "module"
 }
