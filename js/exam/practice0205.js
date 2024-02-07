@@ -33,12 +33,43 @@ const depthTimer = (depth) =>
 //   console.error(err);
 // }
 
+//직렬처리 병렬처리
+
 const sampleUrl = "https://jsonplaceholder.typicode.com/posts?userId=1";
 
 const getPosts = async (url) => {
   const posts = await asyncFetch(url);
-  console.log("🚀 ~ getPosts ~ posts:", posts);
+  // console.log("🚀 ~ getPosts ~ posts:", posts);
+  // console.log(posts[0]);
 };
+
+// const getComments = (url) => {};
+const userId = 1;
+
+const res = await fetch(
+  `https://jsonplaceholder.typicode.com/posts?userId=${userId}`
+);
+
+const posts = (await res.json()).map(({ id: postId, title }) => ({
+  postId,
+  title,
+}));
+console.log("🚀 ~ posts ~ posts:", posts);
+
+// for (const post of posts) {
+//   post.comments = await getComments(post.postId);
+// }
+
+async function getComments(postId) {
+  const cRes = await fetch(
+    `https://jsonplaceholder.typicode.com/posts/${postId}/comments`
+  );
+  return cRes.json();
+}
+
+// const promi = () => new Promise((resolve) => {
+// setTimeout(())
+// })
 
 const asyncFetch = async (url) => {
   const res = await fetch(url);
