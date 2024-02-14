@@ -54,9 +54,11 @@
           cells[6] = calculateTotalSum(cells[4], cells[5]);
           cells[7] = tax(cells[6]);
           cells[8] = realPay(cells[6], cells[7]);
+
           cells.forEach(
             (val) => (row.insertCell().innerText = val.toLocaleString())
           );
+
           totalRealPay += cells[8];
         });
         const h3 = document.getElementById("h3");
