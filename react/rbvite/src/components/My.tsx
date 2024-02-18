@@ -1,4 +1,6 @@
-import { Session } from '../App';
+import { Cart, Session } from '../App';
+import { Login } from './Login';
+import { Profile } from './Profile';
 
 type Props = {
   session: Session;
@@ -6,9 +8,26 @@ type Props = {
   logout: () => void;
 };
 
-const My = ({ session: { loginUser }, login, logout }: Props) => {
+const My = ({ session: { loginUser, cart }, login, logout }: Props) => {
+  if (loginUser) loginUser.name = 'XXXXXXX';
   return (
-    <>{loginUser ? <Profile logout={logout} /> : <Login login={login} />}</>
+    <div
+      style={{ border: '2px solid red', marginBottom: '2rem', padding: '1rem' }}
+    >
+      {loginUser ? (
+        <Profile loginUser={loginUser} logout={logout} />
+      ) : (
+        <Login login={login} />
+      )}
+
+      <ul>
+        {cart.map(({ id, name, price }: Cart) => (
+          <li key={id}>
+            {name} ({price.toLocaleString()}원)
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 };
 export default My;

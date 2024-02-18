@@ -12,13 +12,15 @@ const Hello = ({
   plusCount,
   children,
 }: PropsWithChildren<Props>) => {
+  age = age + 1;
+  console.log('age>>>>', age);
   return (
     <div style={{ border: '1px solid green' }}>
-      <h1>
-        Hello, {name}, ({age})
-      </h1>
-      {children}
-      <button onClick={plusCount}>plus Age</button>
+      <h3>
+        Hello, {name} ({age})
+      </h3>
+      <button onClick={plusCount}>Plus Age</button>
+      <div>{children}</div>
     </div>
   );
 };
