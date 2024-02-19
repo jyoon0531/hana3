@@ -48,6 +48,13 @@ function App() {
     // session.cart = session.cart.filter((item) => item.id !== itemId);
   };
 
+  const addItem = (id: number, name: string, price: number) => {
+    setSession({
+      ...session,
+      cart: [...session.cart, { id, name, price }],
+    });
+  };
+
   return (
     <>
       <h1 ref={titleRef}>Vite + React</h1>
@@ -56,6 +63,7 @@ function App() {
         login={login}
         logout={logout}
         removeItem={removeItem}
+        addItem={addItem}
       />
 
       <Hello name='홍길동' age={count + 30} plusCount={plusCount}>
