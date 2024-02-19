@@ -11,8 +11,8 @@ interface Kakao {
 }
 
 interface SnsUser {
-  [key: string]: string | number;
-  userid: number;
+  [key: string]: string | number; // 인덱스 시그니처
+  userid: number; // primary key가 되는 속성들은 적어주는 것이 좋다!
   email: string;
 }
 

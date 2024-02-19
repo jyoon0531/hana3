@@ -11,6 +11,7 @@ class Collection {
   }
 
   isStack() {
+    // 외부에서 쓸 수 없게 private으로 작성하자!
     return this.constructor.name === "Stack";
   }
 

@@ -4,12 +4,22 @@ import { Profile } from './Profile';
 
 type Props = {
   session: Session;
-  login: () => void;
+  login: (id: number, name: string) => void;
   logout: () => void;
+  removeItem: (itemId: number) => void;
 };
 
-const My = ({ session: { loginUser, cart }, login, logout }: Props) => {
-  if (loginUser) loginUser.name = 'XXXXXXX';
+const My = ({
+  session: { loginUser, cart },
+  login,
+  logout,
+  removeItem,
+}: Props) => {
+  // if (loginUser) loginUser.name = 'XXXXXXX';
+  // const removeItem = (id: number) => {
+  //   const newCart = cart.filter((item) => item.id !== id);
+  // };
+
   return (
     <div
       style={{ border: '2px solid red', marginBottom: '2rem', padding: '1rem' }}
@@ -24,6 +34,7 @@ const My = ({ session: { loginUser, cart }, login, logout }: Props) => {
         {cart.map(({ id, name, price }: Cart) => (
           <li key={id}>
             {name} ({price.toLocaleString()}원)
+            <button onClick={() => removeItem(id)}>X</button>
           </li>
         ))}
       </ul>

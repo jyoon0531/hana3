@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 // import reactLogo from './assets/react.svg'
 // import viteLogo from '/vite.svg'
 import './App.css';
@@ -14,8 +14,8 @@ export type Session = {
 };
 
 const SampleSession: Session = {
-  // loginUser: null,
-  loginUser: { id: 1, name: 'Hong' },
+  loginUser: null,
+  // loginUser: { id: 1, name: 'Hong' },
   cart: [
     { id: 100, name: '라면', price: 3000 },
     { id: 101, name: '컵라면', price: 2000 },
@@ -26,18 +26,37 @@ const SampleSession: Session = {
 function App() {
   const [count, setCount] = useState(0);
   const [session, setSession] = useState<Session>(SampleSession);
+  // DOM을 참조, 직접 DOM에 접근할 때
+  const titleRef = useRef<HTMLHeadingElement>(null);
 
   // style atttr 에 객체로 전달 <h1 style={{backgroundColor: 'red'}}></h1>
   const plusCount = () => setCount(count + 1);
-  const login = () => {};
+  const login = (id: number, name: string) => {
+    setSession({ ...session, loginUser: { id, name } });
+  };
   const logout = () => {
     setSession({ ...session, loginUser: null }); // view와 관련된 것들은 순수함수로 작성!
   };
 
+  const removeItem = (itemId: number) => {
+    setSession({
+      ...session,
+      cart: [...session.cart.filter((item) => item.id !== itemId)],
+    });
+
+    // Virtual-DOM의 rerender() 호출 안 함 session의 주소는 변하지 않았기 때문
+    // session.cart = session.cart.filter((item) => item.id !== itemId);
+  };
+
   return (
     <>
-      <h1>Vite + React</h1>
-      <My session={session} login={login} logout={logout} />
+      <h1 ref={titleRef}>Vite + React</h1>
+      <My
+        session={session}
+        login={login}
+        logout={logout}
+        removeItem={removeItem}
+      />
 
       <Hello name='홍길동' age={count + 30} plusCount={plusCount}>
         children
@@ -47,6 +66,12 @@ function App() {
           count is {count}
         </button>
       </div>
+
+      <button
+        onClick={() => titleRef.current?.scrollIntoView({ behavior: 'smooth' })}
+      >
+        Go to the Top
+      </button>
     </>
   );
 }
