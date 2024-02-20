@@ -38,6 +38,20 @@ function App() {
     setSession({ ...session, loginUser: null }); // view와 관련된 것들은 순수함수로 작성!
   };
 
+  // add(id=0) or modify(id != 0) item
+  const saveItem = ({ id, name, price }: Cart) => {
+    const { cart } = session;
+    const foundItem = id !== 0 && cart.find((item) => item.id === id);
+    if (!foundItem) {
+      id = Math.max(...session.cart.map((item) => item.id), 0) + 1;
+      cart.push({ id, name, price });
+    } else {
+      foundItem.name = name;
+      foundItem.price = price;
+    }
+    setSession({ ...session, cart: [...cart] });
+  };
+
   const removeItem = (itemId: number) => {
     setSession({
       ...session,
@@ -48,12 +62,12 @@ function App() {
     // session.cart = session.cart.filter((item) => item.id !== itemId);
   };
 
-  const addItem = (id: number, name: string, price: number) => {
-    setSession({
-      ...session,
-      cart: [...session.cart, { id, name, price }],
-    });
-  };
+  // const addItem = (id: number, name: string, price: number) => {
+  //   setSession({
+  //     ...session,
+  //     cart: [...session.cart, { id, name, price }],
+  //   });
+  // };
 
   return (
     <>
@@ -63,7 +77,7 @@ function App() {
         login={login}
         logout={logout}
         removeItem={removeItem}
-        addItem={addItem}
+        saveItem={saveItem}
       />
 
       <Hello name='홍길동' age={count + 30} plusCount={plusCount}>
