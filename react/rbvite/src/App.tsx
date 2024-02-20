@@ -3,7 +3,7 @@ import { useRef, useState } from 'react';
 // import viteLogo from '/vite.svg'
 import './App.css';
 import Hello from './components/Hello';
-import My from './components/My';
+import My, { ItemHandler } from './components/My';
 // import { Hello } from './components/Hello';
 
 export type LoginUser = { id: number; name: string };
@@ -14,8 +14,8 @@ export type Session = {
 };
 
 const SampleSession: Session = {
-  loginUser: null,
-  // loginUser: { id: 1, name: 'Hong' },
+  // loginUser: null,
+  loginUser: { id: 1, name: 'Hong' },
   cart: [
     { id: 100, name: '라면', price: 3000 },
     { id: 101, name: '컵라면', price: 2000 },
@@ -29,14 +29,30 @@ function App() {
   // DOM을 참조, 직접 DOM에 접근할 때
   const titleRef = useRef<HTMLHeadingElement>(null);
   // const inpRef = useRef<HTMLInputElement>(null);
-
-  // const myItemControlRef = useRef();
+  // const logoutBtnRef = createRef<HTMLButtonElement>();
+  const myHandlerRef = useRef<ItemHandler>(null);
 
   // style atttr 에 객체로 전달 <h1 style={{backgroundColor: 'red'}}></h1>
   const plusCount = () => setCount(count + 1);
+
   const login = (id: number, name: string) => {
+    console.log('---->', id, name);
+    console.log('------current', myHandlerRef.current);
+    if (!myHandlerRef.current) return;
+    if (!id || isNaN(id)) {
+      myHandlerRef.current.loginHandler.noti('User Id를 입력하세요!');
+      myHandlerRef.current.loginHandler.focusId();
+      return;
+    }
+
+    if (!name) {
+      myHandlerRef.current.loginHandler.noti('User Name를 입력하세요!');
+      myHandlerRef.current.loginHandler.focusName();
+      return;
+    }
     setSession({ ...session, loginUser: { id, name } });
   };
+
   const logout = () => {
     setSession({ ...session, loginUser: null }); // view와 관련된 것들은 순수함수로 작성!
   };
@@ -76,12 +92,23 @@ function App() {
     <>
       <h1 ref={titleRef}>Vite + React</h1>
       {/* <input type='text' ref={inpRef} /> */}
+      <button onClick={() => myHandlerRef.current?.signOut()}>
+        App-Sign-Out
+      </button>
+
+      <button onClick={() => myHandlerRef.current?.notify('테스트 메시지')}>
+        Message
+      </button>
+
+      <button onClick={() => myHandlerRef.current?.removeItem()}>Rm2</button>
+
       <My
         session={session}
         login={login}
         logout={logout}
         removeItem={removeItem}
         saveItem={saveItem}
+        ref={myHandlerRef}
       />
 
       <Hello name='홍길동' age={count + 30} plusCount={plusCount}>
