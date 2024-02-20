@@ -26,6 +26,12 @@ const My = ({
   // 상태 변화가 화면에 바로 반영될 수 있게!
   // const itemIdRef = useRef(0);
   const [currId, setCurrId] = useState(0);
+  // const [message, setMessage] = useState('');
+
+  // const itemHandler = {
+  //   notify: (msg: string) => setMessage(msg),
+  //   removeItem: (itemId: number) => removeItem(itemId),
+  // };
 
   const itemNameRef = useRef<HTMLInputElement>(null);
   const itemPriceRef = useRef<HTMLInputElement>(null);

@@ -28,6 +28,9 @@ function App() {
   const [session, setSession] = useState<Session>(SampleSession);
   // DOM을 참조, 직접 DOM에 접근할 때
   const titleRef = useRef<HTMLHeadingElement>(null);
+  // const inpRef = useRef<HTMLInputElement>(null);
+
+  // const myItemControlRef = useRef();
 
   // style atttr 에 객체로 전달 <h1 style={{backgroundColor: 'red'}}></h1>
   const plusCount = () => setCount(count + 1);
@@ -72,6 +75,7 @@ function App() {
   return (
     <>
       <h1 ref={titleRef}>Vite + React</h1>
+      {/* <input type='text' ref={inpRef} /> */}
       <My
         session={session}
         login={login}
