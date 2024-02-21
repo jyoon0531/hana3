@@ -46,6 +46,11 @@ export const Login = forwardRef((_, ref: ForwardedRef<LoginHandler>) => {
     const name = nameRef.current?.value;
     login(id, name ?? '');
   };
+
+  // useEffect(() => {
+  //   alert('Please login...');
+  // }, []);
+
   return (
     <>
       <form onSubmit={makeLogin}>

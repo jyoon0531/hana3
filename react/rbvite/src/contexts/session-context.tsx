@@ -1,13 +1,13 @@
 /* eslint-disable react-refresh/only-export-components */
-import { PropsWithChildren, createContext, useContext, useState } from 'react';
+import {
+  ReactNode,
+  RefObject,
+  createContext,
+  useContext,
+  useState,
+} from 'react';
+import { ItemHandler } from '../components/My';
 // import { ItemHandler } from '../components/My';
-
-export type LoginUser = { id: number; name: string };
-export type Cart = { id: number; name: string; price: number };
-export type Session = {
-  loginUser: LoginUser | null;
-  cart: Cart[];
-};
 
 type SessionContextProp = {
   session: Session;
@@ -28,40 +28,41 @@ const SampleSession: Session = {
 };
 
 const SessionContext = createContext<SessionContextProp>({
-  session: SampleSession,
+  session: { loginUser: null, cart: [] },
   login: () => {},
   logout: () => {},
   saveItem: () => {},
   removeItem: () => {},
 });
 
-export const SessionProvider = ({ children }: PropsWithChildren) => {
-  const [session, setSession] = useState<Session>(SampleSession);
+type ProviderProps = {
+  children: ReactNode;
+  myHandlerRef?: RefObject<ItemHandler>;
+};
 
-  //   const myHandlerRef = useRef<ItemHandler>(null);
+export const SessionProvider = ({ children, myHandlerRef }: ProviderProps) => {
+  const [session, setSession] = useState<Session>(SampleSession);
 
   const login = (id: number, name: string) => {
     // console.log('id>>', id);
     // console.log('name>>', name);
-    // console.log('myHandlerRef.current>>', myHandlerRef.current);
-    // if (!myHandlerRef.current) return;
-    // const loginNoti = myHandlerRef.current.loginHandler.noti;
-    // if (!loginNoti) return;
+    // console.log('myHandlerRef.current>>', myHandlerRef?.current);
+    const loginNoti = myHandlerRef?.current?.loginHandler.noti || alert;
 
-    // const focusId = myHandlerRef.current.loginHandler.focusId;
-    // const focusName = myHandlerRef.current.loginHandler.focusName;
+    const focusId = myHandlerRef?.current?.loginHandler.focusId;
+    const focusName = myHandlerRef?.current?.loginHandler.focusName;
 
-    // if (!id || isNaN(id)) {
-    //   loginNoti('User Id를 입력하세요!');
-    //   if (focusId) focusId();
-    //   return;
-    // }
+    if (!id || isNaN(id)) {
+      loginNoti('User Id를 입력하세요!');
+      if (focusId) focusId();
+      return;
+    }
 
-    // if (!name) {
-    //   loginNoti('User Name를 입력하세요!');
-    //   if (focusName) focusName();
-    //   return;
-    // }
+    if (!name) {
+      loginNoti('User Name를 입력하세요!');
+      if (focusName) focusName();
+      return;
+    }
     setSession({ ...session, loginUser: { id, name } });
   };
 
