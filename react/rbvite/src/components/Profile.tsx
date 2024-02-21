@@ -1,19 +1,20 @@
 import { Ref, forwardRef } from 'react';
-import { LoginUser } from '../App';
+// import { LoginUser } from '../App';
+import { useSession } from '../contexts/session-context';
 
-type Props = {
-  loginUser: LoginUser;
-  logout: () => void;
-};
-export const Profile = forwardRef(
-  ({ loginUser, logout }: Props, ref: Ref<HTMLButtonElement>) => {
-    return (
-      <>
-        <h3>이름: {loginUser.name}</h3>
-        <button onClick={logout} ref={ref}>
-          Sign-out
-        </button>
-      </>
-    );
-  }
-);
+// type Props = {
+// };
+
+export const Profile = forwardRef((_, ref: Ref<HTMLButtonElement>) => {
+  const { session, logout } = useSession();
+  return (
+    <>
+      <h3>이름: {session.loginUser?.name}</h3>
+      <button onClick={logout} ref={ref}>
+        Sign-out
+      </button>
+    </>
+  );
+});
+
+Profile.displayName = 'Profile';
