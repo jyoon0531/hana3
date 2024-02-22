@@ -2,7 +2,8 @@ import { useState } from 'react';
 
 export default function Effect() {
   const [, rerender] = useState(0);
-
+  // const [first, setFirst] = useState('');
+  // const [last, setLast] = useState('');
   //   console.log('*********', r);
 
   //   const primitive = 123;

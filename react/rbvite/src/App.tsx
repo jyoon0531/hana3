@@ -6,7 +6,7 @@ import Hello from './components/Hello';
 import My, { ItemHandler } from './components/My';
 import { useCounter } from './contexts/counter-context';
 import { SessionProvider } from './contexts/session-context';
-import Effect from './components/Effect';
+// import Effect from './components/Effect';
 // import { Hello } from './components/Hello';
 
 function App() {
@@ -29,9 +29,13 @@ function App() {
 
   return (
     <>
-      <Effect />
+      {/* <Effect /> */}
       <h1 ref={titleRef}>Vite + React</h1>
       {/* <input type='text' ref={inpRef} /> */}
+      <div className='card'>
+        <button onClick={plusCount}>count is {count}</button>
+      </div>
+
       <button onClick={() => myHandlerRef.current?.signOut()}>
         App-Sign-Out
       </button>
@@ -41,13 +45,11 @@ function App() {
       </button>
 
       <button onClick={() => myHandlerRef.current?.removeItem()}>Rm2</button>
+
       <SessionProvider myHandlerRef={myHandlerRef}>
         <My ref={myHandlerRef} />
         <Hello>children</Hello>
       </SessionProvider>
-      <div className='card'>
-        <button onClick={plusCount}>count is {count}</button>
-      </div>
 
       <button
         onClick={() => titleRef.current?.scrollIntoView({ behavior: 'smooth' })}

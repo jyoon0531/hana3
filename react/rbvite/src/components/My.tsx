@@ -93,23 +93,23 @@ const My = forwardRef((_, ref: ForwardedRef<ItemHandler>) => {
         <Login ref={loginHandlerRef} />
       )}
 
-      <ul>
+      <ul className='un-list'>
         {session.cart.map(({ id, name, price }: Cart) => (
-          <li key={id}>
-            <button
-              onClick={() => {
-                setCurrId(id);
-                if (itemNameRef.current) {
-                  itemNameRef.current.value = name;
-                }
-                if (itemPriceRef.current) {
-                  itemPriceRef.current.value = price.toString();
-                }
-              }}
-            >
-              {name} ({price.toLocaleString()}원)
-              <button onClick={() => removeItem(id)}>X</button>
-            </button>
+          <li
+            onClick={() => {
+              // itemIdRef.current = id;
+              setCurrId(id);
+              if (itemNameRef.current) itemNameRef.current.value = name;
+              if (itemPriceRef.current)
+                itemPriceRef.current.value = price.toString();
+            }}
+            aria-hidden='true'
+            key={id}
+            className={`pointer ${currId === id ? 'active' : ''}`}
+          >
+            <small>{id}.</small>
+            {name} ({price.toLocaleString()}원)
+            <button onClick={() => removeItem(id)}>X</button>
           </li>
         ))}
       </ul>

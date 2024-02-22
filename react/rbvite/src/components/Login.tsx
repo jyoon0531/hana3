@@ -2,10 +2,14 @@ import {
   FormEvent,
   ForwardedRef,
   forwardRef,
+  useEffect,
   useImperativeHandle,
   useRef,
 } from 'react';
 import { useSession } from '../contexts/session-context';
+import { useCounter } from '../contexts/counter-context';
+import { useTimeout } from '../hooks/timeout';
+import { useToggle } from '../hooks/toggle';
 
 // type Props = {};
 
@@ -21,6 +25,7 @@ export const Login = forwardRef((_, ref: ForwardedRef<LoginHandler>) => {
   // const [name, setName] = useState('');
   const nameRef = useRef<HTMLInputElement | null>(null);
   const { login } = useSession();
+  const { count, plusCount, minusCount } = useCounter();
 
   const handler: LoginHandler = {
     noti: (msg: string) => alert(msg),
@@ -47,15 +52,49 @@ export const Login = forwardRef((_, ref: ForwardedRef<LoginHandler>) => {
     login(id, name ?? '');
   };
 
+  useEffect(() => {
+    console.log('Please login...');
+    plusCount();
+
+    return () => {
+      console.log('logined');
+      minusCount();
+    };
+  }, [plusCount, minusCount]); // infinite loop
+
   // useEffect(() => {
-  //   alert('Please login...');
-  // }, []);
+  //   const tmout = setTimeout(() => console.log('X=', count), 1000);
+
+  //   return () => clearTimeout(tmout);
+  // }, [count]);
+
+  // const { reset, clear } = useTimeout(() => console.log('X=', count), 1000, [
+  //   count,
+  // ]);
+  // reset();
+  // useTimeout(clear, 500);
+
+  const [isShow, toggle] = useToggle();
+
+  const { reset, clear } = useTimeout(
+    () => console.log('isShow=', isShow),
+    1000,
+    [isShow]
+  );
 
   return (
     <>
+      <button onClick={reset}>Reset</button>
+      <button onClick={clear}>Clear</button>
+      <button
+        onClick={toggle}
+        style={{ border: `1px solid ${isShow ? 'blue' : 'yellow'}` }}
+      >
+        {isShow ? 'HIDE' : 'SHOW'}
+      </button>
       <form onSubmit={makeLogin}>
         <div>
-          LoginID: <input type='text' ref={idRef} />
+          {count} - LoginID: <input type='text' ref={idRef} />
         </div>
         <div>
           LoginName: <input type='text' ref={nameRef} />
