@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 // import reactLogo from './assets/react.svg'
 // import viteLogo from '/vite.svg'
 import './App.css';
@@ -9,14 +9,30 @@ import { SessionProvider } from './contexts/session-context';
 // import Effect from './components/Effect';
 // import { Hello } from './components/Hello';
 
+type Position = {
+  x: number;
+  y: number;
+};
+
 function App() {
   const { count, plusCount } = useCounter();
+  const [position, setPosition] = useState<Position>({ x: 0, y: 0 });
 
   // DOM을 참조, 직접 DOM에 접근할 때
   const titleRef = useRef<HTMLHeadingElement>(null);
   // const inpRef = useRef<HTMLInputElement>(null);
   // const logoutBtnRef = createRef<HTMLButtonElement>();
   const myHandlerRef = useRef<ItemHandler>(null);
+  const catchPosition = ({ x, y }: Position) => {
+    setPosition({ x, y });
+  };
+  useLayoutEffect(() => {
+    window.addEventListener('mousemove', catchPosition);
+
+    return () => {
+      window.removeEventListener('mousemove', catchPosition);
+    };
+  });
 
   // style atttr 에 객체로 전달 <h1 style={{backgroundColor: 'red'}}></h1>
 
@@ -30,11 +46,9 @@ function App() {
   return (
     <>
       {/* <Effect /> */}
+      <small>{JSON.stringify(position)}</small>
       <h1 ref={titleRef}>Vite + React</h1>
       {/* <input type='text' ref={inpRef} /> */}
-      <div className='card'>
-        <button onClick={plusCount}>count is {count}</button>
-      </div>
 
       <button onClick={() => myHandlerRef.current?.signOut()}>
         App-Sign-Out
@@ -56,6 +70,10 @@ function App() {
       >
         Go to the Top
       </button>
+
+      <div className='card'>
+        <button onClick={plusCount}>count is {count}</button>
+      </div>
     </>
   );
 }

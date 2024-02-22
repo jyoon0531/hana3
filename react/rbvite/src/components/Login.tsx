@@ -53,11 +53,12 @@ export const Login = forwardRef((_, ref: ForwardedRef<LoginHandler>) => {
   };
 
   useEffect(() => {
-    console.log('Please login...');
+    // console.log('Please login...');
+    idRef.current?.focus();
     plusCount();
 
     return () => {
-      console.log('logined');
+      // console.log('logined');
       minusCount();
     };
   }, [plusCount, minusCount]); // infinite loop
@@ -78,7 +79,7 @@ export const Login = forwardRef((_, ref: ForwardedRef<LoginHandler>) => {
 
   const { reset, clear } = useTimeout(
     () => console.log('isShow=', isShow),
-    1000,
+    isShow ? 2000 : 1000,
     [isShow]
   );
 

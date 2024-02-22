@@ -1,9 +1,12 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-refresh/only-export-components */
 import {
   ReactNode,
   RefObject,
   createContext,
+  useCallback,
   useContext,
+  useEffect,
   useState,
 } from 'react';
 import { ItemHandler } from '../components/My';
@@ -17,15 +20,15 @@ type SessionContextProp = {
   saveItem: ({ id, name, price }: Cart) => void;
 };
 
-const SampleSession: Session = {
-  loginUser: null,
-  // loginUser: { id: 1, name: 'Hong' },
-  cart: [
-    { id: 100, name: '라면', price: 3000 },
-    { id: 101, name: '컵라면', price: 2000 },
-    { id: 200, name: '파', price: 5000 },
-  ],
-};
+// const SampleSession: Session = {
+//   loginUser: null,
+//   // loginUser: { id: 1, name: 'Hong' },
+//   cart: [
+//     { id: 100, name: '라면', price: 3000 },
+//     { id: 101, name: '컵라면', price: 2000 },
+//     { id: 200, name: '파', price: 5000 },
+//   ],
+// };
 
 const SessionContext = createContext<SessionContextProp>({
   session: { loginUser: null, cart: [] },
@@ -41,37 +44,43 @@ type ProviderProps = {
 };
 
 export const SessionProvider = ({ children, myHandlerRef }: ProviderProps) => {
-  const [session, setSession] = useState<Session>(SampleSession);
+  const [session, setSession] = useState<Session>({
+    loginUser: null,
+    cart: [],
+  });
 
-  const login = (id: number, name: string) => {
-    // console.log('id>>', id);
-    // console.log('name>>', name);
-    // console.log('myHandlerRef.current>>', myHandlerRef?.current);
-    const loginNoti = myHandlerRef?.current?.loginHandler.noti || alert;
+  const login = useCallback(
+    (id: number, name: string) => {
+      // console.log('id>>', id);
+      // console.log('name>>', name);
+      // console.log('myHandlerRef.current>>', myHandlerRef?.current);
+      const loginNoti = myHandlerRef?.current?.loginHandler.noti || alert;
 
-    const focusId = myHandlerRef?.current?.loginHandler.focusId;
-    const focusName = myHandlerRef?.current?.loginHandler.focusName;
+      const focusId = myHandlerRef?.current?.loginHandler.focusId;
+      const focusName = myHandlerRef?.current?.loginHandler.focusName;
 
-    if (!id || isNaN(id)) {
-      loginNoti('User Id를 입력하세요!');
-      if (focusId) focusId();
-      return;
-    }
+      if (!id || isNaN(id)) {
+        loginNoti('User Id를 입력하세요!');
+        if (focusId) focusId();
+        return;
+      }
 
-    if (!name) {
-      loginNoti('User Name를 입력하세요!');
-      if (focusName) focusName();
-      return;
-    }
-    setSession({ ...session, loginUser: { id, name } });
-  };
+      if (!name) {
+        loginNoti('User Name를 입력하세요!');
+        if (focusName) focusName();
+        return;
+      }
+      setSession({ ...session, loginUser: { id, name } });
+    },
+    [myHandlerRef]
+  );
 
-  const logout = () => {
+  const logout = useCallback(() => {
     setSession({ ...session, loginUser: null }); // view와 관련된 것들은 순수함수로 작성!
-  };
+  }, []);
 
   // add(id=0) or modify(id != 0) item
-  const saveItem = ({ id, name, price }: Cart) => {
+  const saveItem = useCallback(({ id, name, price }: Cart) => {
     const { cart } = session;
     const foundItem = id !== 0 && cart.find((item) => item.id === id);
     if (!foundItem) {
@@ -82,9 +91,9 @@ export const SessionProvider = ({ children, myHandlerRef }: ProviderProps) => {
       foundItem.price = price;
     }
     setSession({ ...session, cart: [...cart] });
-  };
+  }, []);
 
-  const removeItem = (itemId: number) => {
+  const removeItem = useCallback((itemId: number) => {
     setSession({
       ...session,
       cart: [...session.cart.filter((item) => item.id !== itemId)],
@@ -92,7 +101,20 @@ export const SessionProvider = ({ children, myHandlerRef }: ProviderProps) => {
 
     // Virtual-DOM의 rerender() 호출 안 함 session의 주소는 변하지 않았기 때문
     // session.cart = session.cart.filter((item) => item.id !== itemId);
-  };
+  }, []);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const { signal } = controller;
+    (async function () {
+      const res = await fetch('/data/sample.json', { signal: signal });
+      const data = await res.json();
+      setSession(data);
+    })();
+
+    return () => controller.abort();
+  }, []);
+
   return (
     <SessionContext.Provider
       value={{ session, login, logout, saveItem, removeItem }}

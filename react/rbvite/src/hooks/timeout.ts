@@ -14,15 +14,20 @@ export const useTimeout = (
   delayRef.current = delay;
 
   const setup = useCallback(() => {
+    // console.log('set-up!!', delay, delayRef.current);
     timerRef.current = setTimeout(cbRef.current, delayRef.current);
   }, []);
 
-  const clear = useCallback(() => clearTimeout(timerRef.current), []);
+  const clear = useCallback(() => {
+    // console.log('clear!!');
+    clearTimeout(timerRef.current);
+  }, []);
 
   const reset = useCallback(() => {
+    // console.log('reset!!');
     clear();
     setup();
-  }, [setup, clear]);
+  }, [clear, setup]);
 
   useEffect(() => {
     // timerRef.current = setTimeout(cb, delay);
