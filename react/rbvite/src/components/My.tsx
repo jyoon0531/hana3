@@ -29,7 +29,7 @@ const My = forwardRef((_, ref: ForwardedRef<ItemHandler>) => {
   // const itemIdRef = useRef(0);
   const [currId, setCurrId] = useState(0);
   const [message, setMessage] = useState('');
-  const { session, removeItem, saveItem } = useSession();
+  const { session, removeItem, saveItem, totalPrice } = useSession();
 
   const itemNameRef = useRef<HTMLInputElement>(null);
   const itemPriceRef = useRef<HTMLInputElement>(null);
@@ -109,10 +109,18 @@ const My = forwardRef((_, ref: ForwardedRef<ItemHandler>) => {
           >
             <small>{id}.</small>
             {name} ({price.toLocaleString()}원)
-            <button onClick={() => removeItem(id)}>X</button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                removeItem(id);
+              }}
+            >
+              X
+            </button>
           </li>
         ))}
       </ul>
+      <div>총 {totalPrice.toLocaleString()}원</div>
       <form onSubmit={saveCartItem}>
         <input type='text' placeholder='상품명...' ref={itemNameRef} />
         <input type='number' placeholder='가격...' ref={itemPriceRef} />

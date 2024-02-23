@@ -4,9 +4,10 @@ import {
   ReactNode,
   RefObject,
   createContext,
-  useCallback,
   useContext,
   useEffect,
+  useMemo,
+  // useReducer,
   useState,
 } from 'react';
 import { ItemHandler } from '../components/My';
@@ -18,17 +19,8 @@ type SessionContextProp = {
   logout: () => void;
   removeItem: (itemId: number) => void;
   saveItem: ({ id, name, price }: Cart) => void;
+  totalPrice: number;
 };
-
-// const SampleSession: Session = {
-//   loginUser: null,
-//   // loginUser: { id: 1, name: 'Hong' },
-//   cart: [
-//     { id: 100, name: '라면', price: 3000 },
-//     { id: 101, name: '컵라면', price: 2000 },
-//     { id: 200, name: '파', price: 5000 },
-//   ],
-// };
 
 const SessionContext = createContext<SessionContextProp>({
   session: { loginUser: null, cart: [] },
@@ -36,6 +28,7 @@ const SessionContext = createContext<SessionContextProp>({
   logout: () => {},
   saveItem: () => {},
   removeItem: () => {},
+  totalPrice: 0,
 });
 
 type ProviderProps = {
@@ -43,44 +36,63 @@ type ProviderProps = {
   myHandlerRef?: RefObject<ItemHandler>;
 };
 
+// type ReducerAction = {
+//   type: string;
+//   payload?: number;
+// };
+
+// const reducer = (session: Session, action: ReducerAction) => {
+//   switch (action.type) {
+//     case 'login': {
+//       const loginNoti = myHandlerRef?.current?.loginHandler.noti || alert;
+//       return;
+//     }
+//   }
+// };
+
 export const SessionProvider = ({ children, myHandlerRef }: ProviderProps) => {
   const [session, setSession] = useState<Session>({
     loginUser: null,
     cart: [],
   });
 
-  const login = useCallback(
-    (id: number, name: string) => {
-      // console.log('id>>', id);
-      // console.log('name>>', name);
-      // console.log('myHandlerRef.current>>', myHandlerRef?.current);
-      const loginNoti = myHandlerRef?.current?.loginHandler.noti || alert;
+  // const [session, dispatch] = useReducer(reducer, {});
 
-      const focusId = myHandlerRef?.current?.loginHandler.focusId;
-      const focusName = myHandlerRef?.current?.loginHandler.focusName;
-
-      if (!id || isNaN(id)) {
-        loginNoti('User Id를 입력하세요!');
-        if (focusId) focusId();
-        return;
-      }
-
-      if (!name) {
-        loginNoti('User Name를 입력하세요!');
-        if (focusName) focusName();
-        return;
-      }
-      setSession({ ...session, loginUser: { id, name } });
-    },
-    [myHandlerRef]
+  // const totalPrice = session.cart.reduce((acc, item) => acc + item.price, 0);
+  const totalPrice = useMemo(
+    () => session.cart.reduce((sum, item) => sum + item.price, 0),
+    [session.cart]
   );
 
-  const logout = useCallback(() => {
+  const login = (id: number, name: string) => {
+    // console.log('id>>', id);
+    // console.log('name>>', name);
+    // console.log('myHandlerRef.current>>', myHandlerRef?.current);
+    const loginNoti = myHandlerRef?.current?.loginHandler.noti || alert;
+
+    const focusId = myHandlerRef?.current?.loginHandler.focusId;
+    const focusName = myHandlerRef?.current?.loginHandler.focusName;
+
+    if (!id || isNaN(id)) {
+      loginNoti('User Id를 입력하세요!');
+      if (focusId) focusId();
+      return;
+    }
+
+    if (!name) {
+      loginNoti('User Name를 입력하세요!');
+      if (focusName) focusName();
+      return;
+    }
+    setSession({ ...session, loginUser: { id, name } });
+  };
+
+  const logout = () => {
     setSession({ ...session, loginUser: null }); // view와 관련된 것들은 순수함수로 작성!
-  }, []);
+  };
 
   // add(id=0) or modify(id != 0) item
-  const saveItem = useCallback(({ id, name, price }: Cart) => {
+  const saveItem = ({ id, name, price }: Cart) => {
     const { cart } = session;
     const foundItem = id !== 0 && cart.find((item) => item.id === id);
     if (!foundItem) {
@@ -91,9 +103,9 @@ export const SessionProvider = ({ children, myHandlerRef }: ProviderProps) => {
       foundItem.price = price;
     }
     setSession({ ...session, cart: [...cart] });
-  }, []);
+  };
 
-  const removeItem = useCallback((itemId: number) => {
+  const removeItem = (itemId: number) => {
     setSession({
       ...session,
       cart: [...session.cart.filter((item) => item.id !== itemId)],
@@ -101,8 +113,9 @@ export const SessionProvider = ({ children, myHandlerRef }: ProviderProps) => {
 
     // Virtual-DOM의 rerender() 호출 안 함 session의 주소는 변하지 않았기 때문
     // session.cart = session.cart.filter((item) => item.id !== itemId);
-  }, []);
+  };
 
+  // Sample data 읽어오기
   useEffect(() => {
     const controller = new AbortController();
     const { signal } = controller;
@@ -117,7 +130,7 @@ export const SessionProvider = ({ children, myHandlerRef }: ProviderProps) => {
 
   return (
     <SessionContext.Provider
-      value={{ session, login, logout, saveItem, removeItem }}
+      value={{ session, login, logout, saveItem, removeItem, totalPrice }}
     >
       {children}
     </SessionContext.Provider>

@@ -6,10 +6,15 @@ import { useSession } from '../contexts/session-context';
 // };
 
 export const Profile = forwardRef((_, ref: Ref<HTMLButtonElement>) => {
-  const { session, logout } = useSession();
+  const {
+    session: { loginUser },
+    logout,
+  } = useSession();
   return (
     <>
-      <h3>이름: {session.loginUser?.name}</h3>
+      <h3>
+        #{loginUser?.id}: {loginUser?.name}
+      </h3>
       <button onClick={logout} ref={ref}>
         Sign-out
       </button>
