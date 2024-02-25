@@ -54,7 +54,6 @@ export default function Posts() {
             <Login />
           </>
         )}
-        {!posts.length && <Login />}
         {posts.map((post) => (
           <Post key={post.id} post={post} />
         ))}

@@ -19,9 +19,13 @@ const CounterContext = createContext<CounterContextProp>({
 });
 
 type ReducerAction = {
-  type: string;
+  type: 'plus' | 'minus';
   payload?: number;
 };
+
+// type Action =
+//   | { type: 'plus'; payload: number }
+//   | { type: 'minus'; payload: number };
 
 const reducer = (count: number, { type, payload = 1 }: ReducerAction) => {
   switch (type) {
@@ -36,7 +40,7 @@ const reducer = (count: number, { type, payload = 1 }: ReducerAction) => {
 export const CounterProvider = ({ children }: PropsWithChildren) => {
   // const [count, setCount] = useState(0);
   const [count, dispatch] = useReducer(reducer, 0);
-  const plusCount = () => dispatch({ type: 'plus' });
+  const plusCount = () => dispatch({ type: 'plus', payload: 1 });
   const minusCount = (payload: number) => dispatch({ type: 'minus', payload });
   // const plusCount = () => setCount((prevCount) => prevCount + 1);
   // const plusCount = useCallback(() => setCount((prevCount) => prevCount + 1), []);
