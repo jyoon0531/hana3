@@ -9,7 +9,7 @@ import {
 type CounterContextProp = {
   count: number;
   plusCount: () => void;
-  minusCount: (payload: number) => void;
+  minusCount: (payload?: number) => void;
 };
 
 const CounterContext = createContext<CounterContextProp>({
@@ -40,8 +40,9 @@ const reducer = (count: number, { type, payload = 1 }: ReducerAction) => {
 export const CounterProvider = ({ children }: PropsWithChildren) => {
   // const [count, setCount] = useState(0);
   const [count, dispatch] = useReducer(reducer, 0);
-  const plusCount = () => dispatch({ type: 'plus', payload: 1 });
-  const minusCount = (payload: number) => dispatch({ type: 'minus', payload });
+  const plusCount = () => dispatch({ type: 'plus' });
+  const minusCount = (payload: number = 1) =>
+    dispatch({ type: 'minus', payload });
   // const plusCount = () => setCount((prevCount) => prevCount + 1);
   // const plusCount = useCallback(() => setCount((prevCount) => prevCount + 1), []);
   // const minusCount = () => setCount((prevCount) => prevCount - 1);

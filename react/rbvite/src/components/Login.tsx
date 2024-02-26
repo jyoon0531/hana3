@@ -10,6 +10,7 @@ import { useSession } from '../contexts/session-context';
 import { useCounter } from '../contexts/counter-context';
 import { useTimeout } from '../hooks/timeout';
 import { useToggle } from '../hooks/toggle';
+import { useNavigate } from 'react-router-dom';
 
 // type Props = {};
 
@@ -20,12 +21,11 @@ export type LoginHandler = {
 };
 
 export const Login = forwardRef((_, ref: ForwardedRef<LoginHandler>) => {
-  // const [id, setId] = useState(0);
   const idRef = useRef<HTMLInputElement | null>(null);
-  // const [name, setName] = useState('');
   const nameRef = useRef<HTMLInputElement | null>(null);
   const { login } = useSession();
   const { count, plusCount, minusCount } = useCounter();
+  const navigate = useNavigate();
 
   const handler: LoginHandler = {
     noti: (msg: string) => alert(msg),
@@ -49,7 +49,9 @@ export const Login = forwardRef((_, ref: ForwardedRef<LoginHandler>) => {
 
     const id = Number(idRef.current?.value);
     const name = nameRef.current?.value;
-    login(id, name ?? '');
+    if (login(id, name ?? '')) {
+      navigate('/my');
+    }
   };
 
   useEffect(() => {
@@ -61,7 +63,8 @@ export const Login = forwardRef((_, ref: ForwardedRef<LoginHandler>) => {
       // console.log('logined');
       minusCount();
     };
-  }, [plusCount, minusCount]); // infinite loop
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // infinite loop
 
   // useEffect(() => {
   //   const tmout = setTimeout(() => console.log('X=', count), 1000);

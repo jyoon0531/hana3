@@ -4,7 +4,7 @@ type FetchParam<T> = {
   url: string | URL | globalThis.Request;
   options?: RequestInit;
   dependencies?: unknown[];
-  defaultData: T;
+  defaultData?: T;
 };
 
 export const useFetch = <T>({
@@ -15,7 +15,7 @@ export const useFetch = <T>({
 }: FetchParam<T>) => {
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [data, setData] = useState<T>(defaultData);
+  const [data, setData] = useState<T | undefined>(defaultData);
 
   useEffect(() => {
     const controller = new AbortController();

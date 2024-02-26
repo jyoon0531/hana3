@@ -1,10 +1,9 @@
-// import { PropsWithChildren } from 'react';
-
+import { PropsWithChildren } from 'react';
 import { useCounter } from '../contexts/counter-context';
 import { useSession } from '../contexts/session-context';
 
 type Props = {
-  children: React.ReactNode;
+  // children: React.ReactNode;
 };
 
 // const Hello = ({
@@ -14,7 +13,7 @@ type Props = {
 //   children,
 // }: PropsWithChildren<Props>) => {    // PropsWithChildren은 Props에서 children을 쓰기 싫을 때
 // const Hello: React.FC<Props> = ({name, age, plusCount, children})=>{
-const Hello = ({ children }: Props) => {
+const Hello = ({ children }: PropsWithChildren<Props>) => {
   const { count: age, plusCount } = useCounter();
   const { session } = useSession();
   const name = session.loginUser?.name || 'Guest';
