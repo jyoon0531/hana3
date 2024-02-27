@@ -1,41 +1,11 @@
 import { useSession } from '../contexts/session-context';
-import { FaAngleDown, FaAngleUp } from 'react-icons/fa6';
-import { Login } from './Login';
-import { useToggle } from '../hooks/toggle';
-import { useFetch } from '../hooks/fetch';
-import clsx from 'clsx';
 
-type PostType = {
-  userId: number;
-  id: number;
-  title: string;
-  body: string;
-};
+import { Login } from './Login';
+import { useFetch } from '../hooks/fetch';
+import { useLocation, useParams, useSearchParams } from 'react-router-dom';
+import Post, { PostType } from './Post';
 
 const BASE_URL = 'http://jsonplaceholder.typicode.com';
-
-const Post = ({ post }: { post: PostType }) => {
-  const [isOpen, toggleOpen] = useToggle();
-  return (
-    <>
-      <li
-        className={clsx({
-          border: isOpen,
-          'border-green-500': isOpen,
-          'mx-3': isOpen,
-        })}
-      >
-        <strong className={clsx(isOpen && 'text-green-500', 'italic')}>
-          {post.title}
-        </strong>
-        <button onClick={() => toggleOpen()} className='rounded'>
-          {isOpen ? <FaAngleUp /> : <FaAngleDown />}
-        </button>
-        {isOpen && <div>{post.body}</div>}
-      </li>
-    </>
-  );
-};
 
 export default function Posts() {
   const {
@@ -50,12 +20,23 @@ export default function Posts() {
     dependencies: [loginUser],
     defaultData: [],
   });
+  const { id } = useParams(); // Item.tsx
+  console.log('🚀 id:', id);
+
+  const location = useLocation();
+  console.log('🚀 location:', location);
+  // const state = location.state as { x: number };
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [searchParams] = useSearchParams({ q: '' });
+  const q = searchParams.get('q');
+  console.log('🚀  q:', q);
 
   return (
     <div className='active'>
       {isLoading && <h1>Fetching Posts...</h1>}
       {error && <h3 style={{ color: 'red' }}>Error: {error}</h3>}
-      <h3>#{loginUser?.id}`s Posts</h3>
+      <h3>#user{loginUser?.id}`s Posts</h3>
       <ul className='un-list'>
         {!loginUser && (
           <>
@@ -63,7 +44,7 @@ export default function Posts() {
             <Login />
           </>
         )}
-        {posts?.map((post) => <Post key={post.id} post={post} />)}
+        {posts?.map((post) => <Post key={post.id} postData={post} />)}
       </ul>
     </div>
   );
