@@ -7,6 +7,7 @@ const ItemLayout = () => {
   const {
     session: { cart },
   } = useSession();
+
   const [currItem, setCurrItem] = useState<Cart | null>(null);
 
   const goItem = (item: Cart) => {
@@ -16,9 +17,9 @@ const ItemLayout = () => {
 
   return (
     <>
-      <div className=''>
-        <ul>
-          {cart?.map((item) => (
+      <div className='flex flex-row'>
+        <ul className='basis-1/2'>
+          {cart.map((item) => (
             <li key={item.id} className='mb-5'>
               <button
                 onClick={() => goItem(item)}
@@ -29,7 +30,7 @@ const ItemLayout = () => {
             </li>
           ))}
         </ul>
-        <div className='mb-5'>
+        <div className='basis-1/2 border border-green-400 rounded-md'>
           <Outlet context={{ item: currItem }} />
         </div>
       </div>

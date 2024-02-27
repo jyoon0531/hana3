@@ -29,6 +29,7 @@ export const useFetch = <T>({
       setLoading(true);
       setError('');
       try {
+        console.log('ffffffffffffffffffffff');
         const res = await fetch(url, options);
 
         if (!res.ok) {
@@ -37,6 +38,7 @@ export const useFetch = <T>({
         }
 
         const data = (await res.json()) as T;
+
         setData(data);
       } catch (err) {
         if (err instanceof Error) {

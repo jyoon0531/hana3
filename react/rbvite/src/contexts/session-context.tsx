@@ -6,13 +6,11 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useReducer,
   // useState,
 } from 'react';
 import { ItemHandler } from '../components/My';
-import { useFetch } from '../hooks/fetch';
 import { LoginHandler } from '../components/Login';
 
 type SessionContextProp = {
@@ -47,36 +45,73 @@ type Action =
   | { type: 'removeItem'; payload: number };
 
 const reducer = (session: Session, { type, payload }: Action) => {
+  let newer;
   switch (type) {
     case 'set':
-      return { ...payload };
+      newer = { ...payload };
+      break;
+
     case 'logout':
     case 'login':
-      return { ...session, loginUser: payload };
+      newer = { ...session, loginUser: payload };
+      break;
+
     case 'removeItem':
-      return {
+      newer = {
         ...session,
         cart: [...session.cart.filter((item) => item.id !== payload)],
       };
-    case 'saveItem': {
-      const { cart } = session;
-      const { id, name, price } = payload;
-      const foundItem = id !== 0 && cart.find((item) => item.id === id);
-      // item 추가
-      if (!foundItem) {
-        const maxId = Math.max(...session.cart.map((item) => item.id), 0);
-        // cart.push(action.item);
-        return { ...session, cart: [...cart, { id: maxId + 1, name, price }] };
+      break;
+
+    case 'saveItem':
+      {
+        const { cart } = session;
+        const { id, name, price } = payload;
+        const foundItem = id !== 0 && cart.find((item) => item.id === id);
+        // item 추가
+        if (!foundItem) {
+          const maxId = Math.max(...session.cart.map((item) => item.id), 0);
+          // cart.push(action.item);
+          newer = {
+            ...session,
+            cart: [...cart, { id: maxId + 1, name, price }],
+          };
+        } else {
+          // item 수정
+          foundItem.name = name;
+          foundItem.price = price;
+          newer = { ...session, cart: [...cart] };
+        }
       }
-      // item 수정
-      foundItem.name = name;
-      foundItem.price = price;
-      return { ...session, cart: [...cart] };
-    }
+      break;
+
     default:
       return session;
   }
+  setStorage(newer);
+  return newer;
 };
+
+const SKEY = 'session';
+const DefaultSession: Session = {
+  loginUser: null,
+  cart: [],
+};
+
+function getStorage() {
+  const storedData = localStorage.getItem(SKEY);
+  if (storedData) {
+    return JSON.parse(storedData) as Session;
+  }
+
+  setStorage(DefaultSession);
+
+  return DefaultSession;
+}
+
+function setStorage(session: Session) {
+  localStorage.setItem(SKEY, JSON.stringify(session));
+}
 
 export const SessionProvider = ({
   children,
@@ -88,15 +123,21 @@ export const SessionProvider = ({
   //   cart: [],
   // });
 
-  const [session, dispatch] = useReducer(reducer, {
-    loginUser: null,
-    cart: [],
-  });
+  // const [session, dispatch] = useReducer(reducer, {
+  //   loginUser: null,
+  //   cart: [],
+  // });
 
-  const setSession = useCallback(
-    (payload: Session) => dispatch({ type: 'set', payload }),
-    []
+  const [session, dispatch] = useReducer(
+    reducer,
+    getStorage() || DefaultSession
   );
+
+  // const setSession = useCallback(
+  //   (payload: Session) => dispatch({ type: 'set', payload }),
+  //   []
+  // );
+
   // setSession에 callback함수 형태로 인자로 넣어주면 useCallback의 의존관계배열에 session을 안 걸어줘도 ok!
   const login = useCallback((id: number, name: string) => {
     const loginNoti =
@@ -151,14 +192,14 @@ export const SessionProvider = ({
 
   // TODO: session 데이터 localStorage에 저장하기
   // Sample data 읽어오기
-  const { data, error } = useFetch<Session>({ url: '/data/sample.json' });
-  if (error) console.log(error);
+  // const { data, error } = useFetch<Session>({ url: '/data/sample.json' });
+  // if (error) console.log(error);
 
-  useEffect(() => {
-    if (data) {
-      setSession(data);
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (data) {
+  //     setSession(data);
+  //   }
+  // }, [data]);
 
   return (
     <SessionContext.Provider
