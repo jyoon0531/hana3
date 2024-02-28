@@ -19,8 +19,8 @@ export const Nav = () => (
       <li>
         <NavLink
           to='/posts'
-          style={({ isActive, isPending }) => {
-            console.log({ isActive, isPending });
+          style={({ isActive }) => {
+            // console.log({ isActive, isPending });
             return { color: isActive ? 'red' : 'inherit' };
           }}
         >
@@ -30,12 +30,23 @@ export const Nav = () => (
       <li>
         <NavLink
           to='/v1/items'
-          style={({ isActive, isPending }) => {
-            console.log({ isActive, isPending });
+          style={({ isActive }) => {
+            // console.log({ isActive, isPending });
             return { color: isActive ? 'red' : 'inherit' };
           }}
         >
           ItemsV1
+        </NavLink>
+      </li>
+      <li>
+        <NavLink
+          to='/v2/items'
+          style={({ isActive }) => {
+            // console.log({ isActive, isPending });
+            return { color: isActive ? 'red' : 'inherit' };
+          }}
+        >
+          ItemsV2
         </NavLink>
       </li>
       <li>

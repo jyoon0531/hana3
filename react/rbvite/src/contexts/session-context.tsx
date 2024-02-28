@@ -6,6 +6,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useReducer,
   // useState,
@@ -22,15 +23,6 @@ type SessionContextProp = {
   totalPrice: number;
 };
 
-const SessionContext = createContext<SessionContextProp>({
-  session: { loginUser: null, cart: [] },
-  login: () => false,
-  logout: () => {},
-  saveItem: () => {},
-  removeItem: () => {},
-  totalPrice: 0,
-});
-
 type ProviderProps = {
   children: ReactNode;
   myHandlerRef?: RefObject<ItemHandler>;
@@ -44,8 +36,38 @@ type Action =
   | { type: 'saveItem'; payload: Cart }
   | { type: 'removeItem'; payload: number };
 
+const SKEY = 'session';
+const DefaultSession: Session = {
+  loginUser: null,
+  cart: [],
+};
+
+function getStorage() {
+  const storedData = localStorage.getItem(SKEY);
+  if (storedData) {
+    return JSON.parse(storedData) as Session; // String ->  JSON as Session
+  }
+
+  setStorage(DefaultSession);
+
+  return DefaultSession;
+}
+
+function setStorage(session: Session) {
+  localStorage.setItem(SKEY, JSON.stringify(session)); // JSON ->  String
+}
+
+const SessionContext = createContext<SessionContextProp>({
+  session: { loginUser: null, cart: [] },
+  login: () => false,
+  logout: () => {},
+  saveItem: () => {},
+  removeItem: () => {},
+  totalPrice: 0,
+});
+
 const reducer = (session: Session, { type, payload }: Action) => {
-  let newer;
+  let newer; // Sesssion객체가 새로 생긴다
   switch (type) {
     case 'set':
       newer = { ...payload };
@@ -92,27 +114,6 @@ const reducer = (session: Session, { type, payload }: Action) => {
   return newer;
 };
 
-const SKEY = 'session';
-const DefaultSession: Session = {
-  loginUser: null,
-  cart: [],
-};
-
-function getStorage() {
-  const storedData = localStorage.getItem(SKEY);
-  if (storedData) {
-    return JSON.parse(storedData) as Session;
-  }
-
-  setStorage(DefaultSession);
-
-  return DefaultSession;
-}
-
-function setStorage(session: Session) {
-  localStorage.setItem(SKEY, JSON.stringify(session));
-}
-
 export const SessionProvider = ({
   children,
   myHandlerRef,
@@ -128,15 +129,12 @@ export const SessionProvider = ({
   //   cart: [],
   // });
 
-  const [session, dispatch] = useReducer(
-    reducer,
-    getStorage() || DefaultSession
-  );
+  const [session, dispatch] = useReducer(reducer, DefaultSession);
 
-  // const setSession = useCallback(
-  //   (payload: Session) => dispatch({ type: 'set', payload }),
-  //   []
-  // );
+  const setSession = useCallback(
+    (payload: Session) => dispatch({ type: 'set', payload }),
+    []
+  );
 
   // setSession에 callback함수 형태로 인자로 넣어주면 useCallback의 의존관계배열에 session을 안 걸어줘도 ok!
   const login = useCallback((id: number, name: string) => {
@@ -200,6 +198,10 @@ export const SessionProvider = ({
   //     setSession(data);
   //   }
   // }, [data]);
+
+  useEffect(() => {
+    setSession(getStorage());
+  }, []);
 
   return (
     <SessionContext.Provider
