@@ -51,7 +51,10 @@ export const ItemEdit = () => {
   };
 
   const goToDetailPage = () => {
-    navigate(`/v2/items/${itemId}`);
+    // 절대경로
+    // navigate(`/v2/items/${itemId}`);
+    // 상대경로
+    navigate(`../${itemId}`);
   };
 
   useEffect(() => {

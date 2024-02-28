@@ -190,7 +190,7 @@ export const SessionProvider = ({
 
   // TODO: session 데이터 localStorage에 저장하기
   // Sample data 읽어오기
-  // const { data, error } = useFetch<Session>({ url: '/data/sample.json' });
+  // const { data, error } = useFetch<Session>({ url: 'data/sample.json' });
   // if (error) console.log(error);
 
   // useEffect(() => {
